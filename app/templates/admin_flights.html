@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Flights Console — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg py-space-2xl space-y-space-2xl">
+  <!-- Admin Sub-Navigation Header & Breadcrumbs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md border-b border-outline-variant/30 pb-space-md">
+    <div class="flex items-center gap-space-sm font-label-md text-label-md text-on-surface-variant">
+      <span class="text-primary font-semibold">Admin Console</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span>Operations</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-on-surface font-medium">Flights</span>
+    </div>
+
+    <!-- Admin Section Tabs -->
+    <nav class="flex items-center gap-space-xs bg-surface-container p-1 rounded-full border border-outline-variant shadow-md">
+      <a href="{{ url_for('admin_flights') }}" class="px-space-md py-1 rounded-full bg-accent text-primary font-label-md text-label-md font-bold shadow-sm flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">connecting_airports</span>
+        <span>Flights</span>
+      </a>
+      <a href="{{ url_for('admin_fares') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">price_change</span>
+        <span>Fares</span>
+      </a>
+      <a href="{{ url_for('admin_analytics') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">insights</span>
+        <span>Analytics</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Header / Action Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+    <div>
+      <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+        Flight Operations Registry
+      </h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">
+        Monitor scheduled flights, seat loads, and update operational statuses.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-space-sm flex-wrap">
+      <div class="flex items-center bg-surface-container px-space-md py-space-sm rounded-lg border border-outline-variant shadow-md">
+        <span class="font-label-md text-label-md text-on-surface-variant mr-space-sm">Total Flights:</span>
+        <span class="font-label-lg text-label-lg font-semibold text-primary tabular-nums" id="totalFlightsCount">
+          {{ flights|length }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Strip -->
+  <div class="bg-surface-container p-space-md rounded-xl border border-outline-variant shadow-md flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+    <div class="flex flex-1 items-center gap-space-sm">
+      <div class="relative flex-1 max-w-md">
+        <span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+        <input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md rounded-lg pl-10 pr-space-md py-space-sm border border-outline-variant/30 focus:outline-none focus:border-primary-container" id="flightSearchInput" oninput="filterFlightsTable()" placeholder="Filter by flight number or airport (e.g. AI-101, BOM)..." type="text"/>
+      </div>
+      <div class="flex items-center gap-space-xs flex-wrap">
+        <button class="status-tab px-space-md py-space-xs rounded-full bg-accent text-primary font-label-md text-label-md font-bold transition-colors" data-status="all" onclick="filterByStatus('all', this)" type="button">All</button>
+        <button class="status-tab px-space-md py-space-xs rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" data-status="scheduled" onclick="filterByStatus('scheduled', this)" type="button">Scheduled</button>
+        <button class="status-tab px-space-md py-space-xs rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" data-status="delayed" onclick="filterByStatus('delayed', this)" type="button">Delayed</button>
+        <button class="status-tab px-space-md py-space-xs rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" data-status="cancelled" onclick="filterByStatus('cancelled', this)" type="button">Cancelled</button>
+        <button class="status-tab px-space-md py-space-xs rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" data-status="landed" onclick="filterByStatus('landed', this)" type="button">Landed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flight Operations Table -->
+  <div class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md border-collapse" id="flightsTable">
+        <thead>
+          <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+            <th class="py-space-md px-space-lg font-semibold">Flight No</th>
+            <th class="py-space-md px-space-lg font-semibold">Route</th>
+            <th class="py-space-md px-space-lg font-semibold">Departure</th>
+            <th class="py-space-md px-space-lg font-semibold">Arrival</th>
+            <th class="py-space-md px-space-lg font-semibold">Seats (Avail / Total)</th>
+            <th class="py-space-md px-space-lg font-semibold">Status</th>
+            <th class="py-space-md px-space-lg font-semibold text-right">Update Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant/20" id="flightsTableBody">
+          {% for fl in flights %}
+            <tr class="flight-row hover:bg-accent transition-colors" data-flight="{{ fl.flight_no|lower }}" data-route="{{ fl.origin|lower }} {{ fl.dest|lower }}" data-status="{{ fl.status|lower }}">
+              <td class="py-space-md px-space-lg font-title-md text-title-md font-semibold text-on-surface">
+                {{ fl.flight_no }}
+              </td>
+              <td class="py-space-md px-space-lg">
+                <div class="flex items-center gap-space-sm font-label-lg text-label-lg text-on-surface">
+                  <span class="bg-surface-container-lowest px-2 py-0.5 rounded font-mono text-secondary">{{ fl.origin }}</span>
+                  <span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+                  <span class="bg-surface-container-lowest px-2 py-0.5 rounded font-mono text-secondary">{{ fl.dest }}</span>
+                </div>
+                <div class="text-[12px] text-on-surface-variant mt-0.5">
+                  {{ fl.origin_city }} → {{ fl.dest_city }}
+                </div>
+              </td>
+              <td class="py-space-md px-space-lg text-on-surface font-mono font-body-sm">
+                {{ fl.dep_time.strftime('%Y-%m-%d %H:%M') }}
+              </td>
+              <td class="py-space-md px-space-lg text-on-surface font-mono font-body-sm">
+                {{ fl.arr_time.strftime('%Y-%m-%d %H:%M') }}
+              </td>
+              <td class="py-space-md px-space-lg font-mono">
+                <span class="font-semibold text-primary">{{ fl.available_seats }}</span>
+                <span class="text-outline">/</span>
+                <span class="text-on-surface-variant">{{ fl.total_seats }}</span>
+              </td>
+              <td class="py-space-md px-space-lg">
+                <span class="status-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-md text-label-md font-semibold
+                  {% if fl.status == 'scheduled' %}
+                    bg-success-container text-success
+                  {% elif fl.status == 'delayed' %}
+                    bg-warning-container text-warning
+                  {% elif fl.status == 'cancelled' %}
+                    bg-error-container text-error
+                  {% elif fl.status == 'landed' %}
+                    bg-success-container text-success
+                  {% else %}
+                    bg-accent text-primary
+                  {% endif %}">
+                  {{ fl.status|capitalize }}
+                </span>
+              </td>
+              <td class="py-space-md px-space-lg text-right">
+                <form method="POST" action="{{ url_for('admin_flights') }}" class="inline-flex items-center justify-end gap-space-xs">
+                  <input type="hidden" name="flight_id" value="{{ fl.flight_id }}"/>
+                  <select name="status" class="bg-surface-container-lowest text-on-surface font-label-md text-label-md px-space-sm py-1.5 rounded border border-outline-variant/40 focus:outline-none focus:border-primary-container cursor-pointer">
+                    <option value="scheduled" {% if fl.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                    <option value="delayed" {% if fl.status == 'delayed' %}selected{% endif %}>Delayed</option>
+                    <option value="cancelled" {% if fl.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    <option value="landed" {% if fl.status == 'landed' %}selected{% endif %}>Landed</option>
+                  </select>
+                  <button type="submit" class="bg-primary hover:bg-primary-hover text-on-primary font-label-md text-label-md font-bold px-3 py-1.5 rounded-full transition-colors shadow-md">
+                    Update
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  let currentStatus = 'all';
+
+  function filterFlightsTable() {
+    const query = document.getElementById('flightSearchInput').value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#flightsTableBody .flight-row');
+
+    rows.forEach(row => {
+      const flight = row.getAttribute('data-flight') || '';
+      const route = row.getAttribute('data-route') || '';
+      const status = row.getAttribute('data-status') || '';
+
+      const matchesQuery = !query || flight.includes(query) || route.includes(query);
+      const matchesStatus = (currentStatus === 'all') || (status === currentStatus);
+
+      row.style.display = (matchesQuery && matchesStatus) ? '' : 'none';
+    });
+  }
+
+  function filterByStatus(status, btn) {
+    currentStatus = status.toLowerCase();
+    document.querySelectorAll('.status-tab').forEach(b => {
+      b.classList.remove('bg-accent', 'text-primary', 'font-bold');
+      b.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+    });
+    btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+    btn.classList.add('bg-accent', 'text-primary', 'font-bold');
+    filterFlightsTable();
+  }
+</script>
+{% endblock %}

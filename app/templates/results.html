@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results: {{ origin }} → {{ dest }} — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-[1024px] mx-auto px-gutter lg:px-gutter-lg py-space-2xl">
+  <!-- Search Summary Banner & Modify Bar -->
+  <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md mb-space-2xl">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+      <div class="flex items-center gap-space-md flex-wrap">
+        <div class="flex items-center gap-space-xs font-title-md text-title-md text-on-surface font-semibold">
+          <span>{{ origin }}</span>
+          <span class="material-symbols-outlined text-[18px] text-primary">arrow_forward</span>
+          <span>{{ dest }}</span>
+        </div>
+        <div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+          <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+          <span>{{ date }}</span>
+        </div>
+        <div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+          <span class="material-symbols-outlined text-[16px]">person</span>
+          <span>{{ passengers }} {% if passengers == 1 %}passenger{% else %}passengers{% endif %}</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-space-sm">
+        <!-- Sort Control -->
+        <form method="GET" action="{{ url_for('results') }}" class="flex items-center gap-space-xs">
+          <input type="hidden" name="origin" value="{{ origin }}"/>
+          <input type="hidden" name="dest" value="{{ dest }}"/>
+          <input type="hidden" name="date" value="{{ date }}"/>
+          <input type="hidden" name="passengers" value="{{ passengers }}"/>
+          <label for="sortSelector" class="font-label-md text-label-md text-on-surface-variant">Sort:</label>
+          <select name="sort" id="sortSelector" onchange="this.form.submit()" class="bg-surface-container-high text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-full border border-outline-variant/50 focus:outline-none cursor-pointer">
+            <option value="price" {% if sort == 'price' %}selected{% endif %}>Cheapest price</option>
+            <option value="duration" {% if sort == 'duration' %}selected{% endif %}>Fastest duration</option>
+            <option value="hops" {% if sort == 'hops' %}selected{% endif %}>Fewest stops</option>
+          </select>
+        </form>
+
+        <a href="{{ url_for('search') }}" class="px-space-md py-1.5 rounded-full bg-surface-container hover:bg-accent text-on-surface border border-outline-variant font-label-md text-label-md transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">edit</span>
+          <span>Modify</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="space-y-space-2xl">
+    <div class="flex items-center justify-between pb-space-xs">
+      <div>
+        <h2 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">
+          Available Itineraries
+        </h2>
+        <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+          Showing ranked itineraries evaluated across live fare classes and dynamic pricing.
+        </p>
+      </div>
+      <div class="font-label-md text-label-md text-on-surface-variant">
+        {{ routes|length }} {% if routes|length == 1 %}option{% else %}options{% endif %} found
+      </div>
+    </div>
+
+    {% if routes %}
+      <div class="bg-surface-container rounded-xl overflow-hidden shadow-md border border-outline-variant divide-y divide-outline-variant">
+        {% for route in routes %}
+          <div class="hover:bg-accent transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg">
+            <!-- Flight Route Timing -->
+            <div class="flex items-center gap-space-lg min-w-[280px]">
+              <div class="w-11 h-11 rounded-full bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
+              </div>
+              <div class="flex flex-col">
+                <div class="flex items-center gap-space-xs font-title-md text-title-md text-on-surface font-semibold tracking-tight">
+                  <span>{{ route.first_dep.strftime('%H:%M') }}</span>
+                  <span class="text-outline font-normal mx-0.5">→</span>
+                  <span>{{ route.last_arr.strftime('%H:%M') }}</span>
+                  {% if route.last_arr.date() > route.first_dep.date() %}
+                    <span class="font-label-md text-[11px] text-tertiary font-bold ml-1">+1 day</span>
+                  {% endif %}
+                </div>
+                <div class="text-[13px] text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+                  <span class="font-mono text-secondary font-medium">{{ route.path|join(' → ') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Duration and Stop Badges -->
+            <div class="flex flex-col md:items-center">
+              <span class="font-title-md text-title-md text-on-surface font-medium">
+                {% if route.duration_minutes %}
+                  {{ (route.duration_minutes // 60) }}h {{ (route.duration_minutes % 60) }}m
+                {% else %}
+                  {{ route.duration }}
+                {% endif %}
+              </span>
+              <div class="mt-1">
+                {% if route.hops == 1 %}
+                  <span class="font-label-md text-[11px] text-primary font-bold px-2.5 py-0.5 rounded-full bg-accent border border-outline-variant">
+                    Nonstop
+                  </span>
+                {% elif route.hops == 2 %}
+                  <span class="font-label-md text-[11px] text-on-surface-variant font-bold px-2.5 py-0.5 rounded-full bg-accent border border-outline-variant">
+                    1 stop
+                  </span>
+                {% else %}
+                  <span class="font-label-md text-[11px] text-on-surface-variant font-bold px-2.5 py-0.5 rounded-full bg-accent border border-outline-variant">
+                    {{ route.hops - 1 }} stops
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Price and Booking CTA -->
+            <div class="flex items-center justify-between md:justify-end gap-space-xl pt-space-xs md:pt-0">
+              <div class="flex flex-col items-end">
+                <span class="font-headline-md text-headline-md text-primary font-bold tracking-tight leading-none">
+                  ${{ "%.2f"|format(route.total_price) }}
+                </span>
+                <span class="font-label-md text-[12px] text-on-surface-variant mt-1">
+                  total for {{ passengers }} {% if passengers == 1 %}passenger{% else %}passengers{% endif %}
+                </span>
+              </div>
+              <a href="{{ url_for('book', ids=route.flight_ids|join(','), passengers=passengers, quoted_price=route.total_price) }}" class="rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold px-6 py-2.5 hover:bg-primary-hover active:scale-[0.99] transition-all shadow-md shrink-0 flex items-center gap-1.5">
+                <span>Select</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="bg-surface-container rounded-xl p-space-2xl text-center border border-outline-variant shadow-md">
+        <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-outline mx-auto mb-space-md">
+          <span class="material-symbols-outlined text-[32px]">flight_takeoff</span>
+        </div>
+        <h3 class="font-title-md text-title-md text-on-surface font-bold mb-space-md">
+          No matching flights found
+        </h3>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto mb-space-lg">
+          No scheduled direct or multi-hop routes with sufficient seat availability were found for {{ origin }} → {{ dest }} on {{ date }}.
+        </p>
+        <a href="{{ url_for('search') }}" class="inline-flex items-center gap-space-xs rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold px-6 py-2.5 hover:bg-primary-hover transition-all shadow-md">
+          <span class="material-symbols-outlined text-[18px]">search</span>
+          <span>Search another date or route</span>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

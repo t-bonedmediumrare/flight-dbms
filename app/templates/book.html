@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Book Flight Itinerary — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-gutter lg:px-gutter-lg py-space-2xl">
+  <!-- Itinerary Header -->
+  <div class="mb-space-2xl">
+    <div class="flex items-center gap-space-xs text-primary text-label-md font-label-md uppercase tracking-wider mb-space-sm">
+      <span class="material-symbols-outlined text-[16px]">airplane_ticket</span>
+      <span>Booking Review &amp; Passenger Registration</span>
+    </div>
+    <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+      Confirm Flight Reservation
+    </h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">
+      Complete passenger details and select cabin classes for each flight segment.
+    </p>
+  </div>
+
+  <!-- Price Change Alert Banner -->
+  {% if price_updated %}
+    <div class="mb-space-xl p-space-lg rounded-xl bg-warning-container border border-outline-variant text-warning flex items-start gap-space-md shadow-md">
+      <span class="material-symbols-outlined text-[24px] text-secondary shrink-0 mt-0.5">price_change</span>
+      <div>
+        <h3 class="font-title-md text-title-md font-bold text-on-surface">Fare Updated Due to Real-Time Demand</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+          Dynamic pricing adjusted the total fare to <span class="font-bold text-primary">${{ "%.2f"|format(quoted_price|float) }}</span>.
+          Please review the updated price below and re-submit to confirm your reservation at this locked fare.
+        </p>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Sold Out / Waitlist Banner -->
+  {% if no_seats %}
+    <div class="mb-space-xl p-space-lg rounded-xl bg-error-container border border-outline-variant text-error flex items-start justify-between gap-space-md flex-wrap shadow-md">
+      <div class="flex items-start gap-space-md">
+        <span class="material-symbols-outlined text-[24px] text-error shrink-0 mt-0.5">event_busy</span>
+        <div>
+          <h3 class="font-title-md text-title-md font-bold text-on-surface">Selected Seats No Longer Available</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+            Seats in one or more selected classes were reserved by another transaction.
+            {% if can_waitlist %}
+              You may join the automated waitlist queue for this direct flight. If a confirmed passenger cancels, waitlisted passengers are automatically promoted.
+            {% else %}
+              Waitlisting is only supported on direct single-flight itineraries. Please modify your search.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      {% if can_waitlist %}
+        <form method="POST" action="{{ url_for('book', ids=flight_ids) }}" class="flex items-center gap-space-sm mt-space-sm sm:mt-0">
+          <input type="hidden" name="action" value="waitlist"/>
+          <input type="hidden" name="class_id" value="{{ failed_class_id or (flights[0].fare_classes[0].class_id if flights[0].fare_classes else '') }}"/>
+          <input type="hidden" name="seats_requested" value="{{ passengers_count }}"/>
+          <button type="submit" class="px-space-lg py-2.5 rounded-full bg-warning text-on-primary font-label-lg text-label-lg font-bold hover:bg-primary-hover shadow-md transition-all flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">queue</span>
+            <span>Join Waitlist Queue</span>
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('book', ids=flight_ids) }}" id="bookingForm">
+    <input type="hidden" name="action" value="book"/>
+    <input type="hidden" name="quoted_price" value="{{ quoted_price }}"/>
+    <input type="hidden" name="passengers_count" value="{{ passengers_count }}"/>
+
+    <!-- Itinerary Segments & Cabin Class Selector -->
+    <div class="mb-space-2xl space-y-space-lg">
+      <h2 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-space-xs">
+        <span class="material-symbols-outlined text-primary text-[20px]">route</span>
+        <span>Flight Itinerary Segments ({{ flights|length }} leg{% if flights|length > 1 %}s{% endif %})</span>
+      </h2>
+
+      {% for flight in flights %}
+        <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant/30">
+            <div class="flex items-center gap-space-md">
+              <div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/50 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[20px]">flight</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-space-xs font-title-md text-title-md font-semibold text-on-surface">
+                  <span>{{ flight.flight_no }}</span>
+                  <span class="text-outline mx-1">•</span>
+                  <span>{{ flight.origin }} ({{ flight.origin_city }})</span>
+                  <span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+                  <span>{{ flight.dest }} ({{ flight.dest_city }})</span>
+                </div>
+                <div class="text-body-sm text-on-surface-variant flex items-center gap-space-md mt-0.5">
+                  <span>Dep: {{ flight.dep_time.strftime('%Y-%m-%d %H:%M') }}</span>
+                  <span>Arr: {{ flight.arr_time.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cabin Class Dropdown for this segment -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-space-sm bg-surface-container-lowest p-space-sm rounded-lg border border-outline-variant/30">
+              <label for="class_select_{{ flight.flight_id }}" class="font-label-md text-label-md text-on-surface-variant shrink-0">
+                Cabin Class:
+              </label>
+              <select name="class_id_{{ flight.flight_id }}" id="class_select_{{ flight.flight_id }}" required class="bg-transparent font-label-lg text-label-lg text-on-surface font-semibold focus:outline-none cursor-pointer">
+                {% for fc in flight.fare_classes %}
+                  <option value="{{ fc.class_id }}" {% if fc.available_seats < passengers_count %}disabled{% endif %}>
+                    {{ fc.class_name|capitalize }} — ${{ "%.2f"|format(fc.current_price) }} ({{ fc.available_seats }} seats left)
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Two-column Layout: Passenger Details (~65%) and Summary (~35%) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+      <!-- Left: Passenger Inputs -->
+      <div class="lg:col-span-8 flex flex-col gap-space-lg">
+        <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+          <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-outline-variant/30">
+            <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+              <span class="material-symbols-outlined text-primary text-[22px]">group</span>
+              <span>Passenger Information</span>
+            </h2>
+            <span class="font-label-md text-label-md px-space-md py-0.5 rounded-full bg-accent text-primary font-bold">
+              {{ passengers_count }} {% if passengers_count == 1 %}Passenger{% else %}Passengers{% endif %}
+            </span>
+          </div>
+
+          <div class="space-y-space-xl">
+            {% for i in range(passengers_count) %}
+              <div class="p-space-md rounded-lg bg-surface-container-low border border-outline-variant/30 space-y-space-md">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-lg text-label-lg font-semibold text-primary">
+                    Passenger {{ i + 1 }}
+                  </span>
+                  <span class="font-label-md text-label-md text-on-surface-variant">
+                    Seat allocated upon booking
+                  </span>
+                </div>
+
+                <div>
+                  <label class="block font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1" for="name_{{ i }}">
+                    Full Legal Name
+                  </label>
+                  <input type="text" name="passenger_name" id="name_{{ i }}" required placeholder="e.g. Eleanor Vance" class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md rounded-lg px-4 py-2.5 border border-outline-variant/30 focus:border-primary-container focus:outline-none transition-colors"/>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                  <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1" for="age_{{ i }}">
+                      Age
+                    </label>
+                    <input type="number" name="passenger_age" id="age_{{ i }}" required min="0" max="120" value="30" class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg px-4 py-2.5 border border-outline-variant/30 focus:border-primary-container focus:outline-none transition-colors"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1" for="gender_{{ i }}">
+                      Gender
+                    </label>
+                    <div class="relative">
+                      <select name="passenger_gender" id="gender_{{ i }}" required class="w-full bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg px-4 py-2.5 border border-outline-variant/30 focus:border-primary-container focus:outline-none transition-colors appearance-none cursor-pointer">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other / Non-binary</option>
+                        <option value="U">Prefer not to say</option>
+                      </select>
+                      <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Fare Summary & Confirmation -->
+      <div class="lg:col-span-4 flex flex-col gap-space-md">
+        <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+          <div class="flex items-center justify-between pb-space-sm mb-space-md border-b border-outline-variant/30">
+            <h2 class="font-title-md text-title-md font-bold text-on-surface">Payment Summary</h2>
+            <span class="material-symbols-outlined text-primary text-[20px]">receipt_long</span>
+          </div>
+
+          <div class="space-y-space-sm font-body-md text-body-md">
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span>Passengers</span>
+              <span class="text-on-surface font-medium">{{ passengers_count }}</span>
+            </div>
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span>Flight segments</span>
+              <span class="text-on-surface font-medium">{{ flights|length }}</span>
+            </div>
+            <div class="flex items-center justify-between text-on-surface-variant">
+              <span>Payment status</span>
+              <span class="text-tertiary font-medium">Simulated / Instant</span>
+            </div>
+
+            <div class="w-full h-px bg-outline-variant/40 my-space-md"></div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-label-lg text-label-lg text-on-surface block font-semibold">Total Price</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Locks current fare</span>
+              </div>
+              <div class="text-right">
+                <span class="font-headline-md text-headline-md font-bold text-primary">
+                  ${{ "%.2f"|format(quoted_price|float) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-primary text-on-primary font-label-lg text-label-lg font-bold py-3.5 px-6 rounded-full hover:bg-primary-hover active:scale-[0.99] transition-all text-center cursor-pointer mt-space-lg flex items-center justify-center gap-space-xs shadow-md">
+            <span>Confirm and Book</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </button>
+
+          <div class="mt-space-md flex items-center justify-center gap-space-xs text-outline font-body-sm text-body-sm">
+            <span class="material-symbols-outlined text-[16px]">lock</span>
+            <span>Atomic Transaction Guaranteed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

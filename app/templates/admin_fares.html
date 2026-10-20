@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Fares &amp; Pricing — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg py-space-2xl space-y-space-2xl">
+  <!-- Admin Sub-Navigation Header & Breadcrumbs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md border-b border-outline-variant/30 pb-space-md">
+    <div class="flex items-center gap-space-sm font-label-md text-label-md text-on-surface-variant">
+      <span class="text-primary font-semibold">Admin Console</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span>Operations</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-on-surface font-medium">Fares</span>
+    </div>
+
+    <!-- Admin Section Tabs -->
+    <nav class="flex items-center gap-space-xs bg-surface-container p-1 rounded-full border border-outline-variant shadow-md">
+      <a href="{{ url_for('admin_flights') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">connecting_airports</span>
+        <span>Flights</span>
+      </a>
+      <a href="{{ url_for('admin_fares') }}" class="px-space-md py-1 rounded-full bg-accent text-primary font-label-md text-label-md font-bold shadow-sm flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">price_change</span>
+        <span>Fares</span>
+      </a>
+      <a href="{{ url_for('admin_analytics') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">insights</span>
+        <span>Analytics</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Header / Action Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-lg">
+    <div>
+      <div class="flex items-center gap-space-xs font-label-md text-label-md text-primary mb-space-xs">
+        <span class="material-symbols-outlined text-[16px]">tune</span>
+        <span>DYNAMIC PRICING · DEMAND ENGINE</span>
+      </div>
+      <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+        Fare Classes &amp; Audit Trail
+      </h1>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">
+        Real-time dynamic pricing model driven by seat occupancy and time-to-departure multipliers (§6.3).
+      </p>
+    </div>
+
+    <div class="flex items-center gap-space-md">
+      <form method="POST" action="{{ url_for('admin_fares') }}">
+        <button type="submit" class="flex items-center gap-space-sm bg-primary text-on-primary font-label-lg text-label-lg font-bold px-6 py-2.5 rounded-full hover:bg-primary-hover transition-all shadow-md active:scale-95">
+          <span class="material-symbols-outlined text-[18px]">sync</span>
+          <span>Run pricing update</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- KPI Overview Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+    <div class="bg-surface-container p-space-lg rounded-xl border border-outline-variant shadow-md flex items-center justify-between">
+      <div>
+        <div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Active Fare Classes</div>
+        <div class="font-headline-md text-headline-md text-on-surface font-bold mt-space-xs">{{ fares|length }}</div>
+      </div>
+      <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined text-[20px]">sell</span>
+      </div>
+    </div>
+
+    <div class="bg-surface-container p-space-lg rounded-xl border border-outline-variant shadow-md flex items-center justify-between">
+      <div>
+        <div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Audit Log Events</div>
+        <div class="font-headline-md text-headline-md text-on-surface font-bold mt-space-xs">{{ history|length }}</div>
+      </div>
+      <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+        <span class="material-symbols-outlined text-[20px]">history</span>
+      </div>
+    </div>
+
+    <div class="bg-surface-container p-space-lg rounded-xl border border-outline-variant shadow-md flex items-center justify-between">
+      <div>
+        <div class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pricing Logic</div>
+        <div class="font-headline-md text-headline-md text-primary font-bold mt-space-xs">Demand + Time</div>
+      </div>
+      <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+        <span class="material-symbols-outlined text-[20px]">trending_up</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Active Fare Classes Table -->
+  <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden">
+    <div class="px-space-xl py-space-lg bg-accent flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border-b border-outline-variant">
+      <div class="flex items-center gap-space-sm">
+        <span class="material-symbols-outlined text-primary text-[22px]">sell</span>
+        <div>
+          <h2 class="font-title-md text-title-md text-on-surface font-bold">Active Fare Class Inventory</h2>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Class configurations per active future flight</span>
+        </div>
+      </div>
+      <span class="font-label-md text-label-md text-on-surface-variant">Base currency: USD ($)</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md border-collapse">
+        <thead>
+          <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+            <th class="py-space-md px-space-lg">Flight</th>
+            <th class="py-space-md px-space-lg">Route</th>
+            <th class="py-space-md px-space-lg">Class</th>
+            <th class="py-space-md px-space-lg text-center">Available Seats</th>
+            <th class="py-space-md px-space-lg text-right">Base Price</th>
+            <th class="py-space-md px-space-lg text-right">Current Price</th>
+            <th class="py-space-md px-space-lg text-right">Price Delta</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant/20">
+          {% for f in fares %}
+            {% set delta = (f.current_price - f.base_price) %}
+            <tr class="hover:bg-surface-container-high/40 transition-colors">
+              <td class="py-space-md px-space-lg font-mono font-semibold text-primary">{{ f.flight_no }}</td>
+              <td class="py-space-md px-space-lg font-mono text-secondary">{{ f.origin }} → {{ f.dest }}</td>
+              <td class="py-space-md px-space-lg">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-md text-label-md capitalize font-bold bg-accent text-primary">
+                  {{ f.class_name }}
+                </span>
+              </td>
+              <td class="py-space-md px-space-lg text-center font-mono font-medium">
+                <span class="{% if f.available_seats == 0 %}text-error font-bold{% else %}text-on-surface{% endif %}">
+                  {{ f.available_seats }}
+                </span>
+                <span class="text-outline">/</span>
+                <span class="text-on-surface-variant">{{ f.total_seats }}</span>
+              </td>
+              <td class="py-space-md px-space-lg text-right font-mono text-on-surface-variant">${{ "%.2f"|format(f.base_price) }}</td>
+              <td class="py-space-md px-space-lg text-right font-mono font-bold text-on-surface">${{ "%.2f"|format(f.current_price) }}</td>
+              <td class="py-space-md px-space-lg text-right font-mono font-semibold text-label-md
+                {% if delta > 0 %}text-primary{% elif delta < 0 %}text-tertiary{% else %}text-outline{% endif %}">
+                {% if delta > 0 %}+${{ "%.2f"|format(delta) }}{% elif delta < 0 %}-${{ "%.2f"|format(delta|abs) }}{% else %}$0.00{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Section 2: Price History Audit Log -->
+  <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden">
+    <div class="px-space-xl py-space-lg bg-accent flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border-b border-outline-variant">
+      <div class="flex items-center gap-space-sm">
+        <span class="material-symbols-outlined text-primary text-[22px]">history</span>
+        <div>
+          <h2 class="font-title-md text-title-md text-on-surface font-bold">Price History Audit Trail</h2>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Immutable log of autonomous sales and scheduled reprice adjustments</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+        <span class="material-symbols-outlined text-[16px]">schedule</span>
+        <span>Timestamped Ledger</span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md border-collapse">
+        <thead>
+          <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+            <th class="py-space-md px-space-lg">Flight</th>
+            <th class="py-space-md px-space-lg">Class</th>
+            <th class="py-space-md px-space-lg text-right">Old Price</th>
+            <th class="py-space-md px-space-lg text-right">New Price</th>
+            <th class="py-space-md px-space-lg">Reason</th>
+            <th class="py-space-md px-space-lg text-right">Changed At</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant/20">
+          {% for h in history %}
+            <tr class="hover:bg-surface-container-high/40 transition-colors">
+              <td class="py-space-md px-space-lg font-mono font-medium text-primary">{{ h.flight_no }}</td>
+              <td class="py-space-md px-space-lg capitalize text-on-surface">{{ h.class_name }}</td>
+              <td class="py-space-md px-space-lg text-right font-mono text-outline line-through">${{ "%.2f"|format(h.old_price) }}</td>
+              <td class="py-space-md px-space-lg text-right font-mono font-bold text-primary">${{ "%.2f"|format(h.new_price) }}</td>
+              <td class="py-space-md px-space-lg">
+                <span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-accent text-primary font-label-md text-label-md">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  <span>{{ h.reason }}</span>
+                </span>
+              </td>
+              <td class="py-space-md px-space-lg text-right font-mono font-body-sm text-on-surface-variant">
+                {{ h.changed_at.strftime('%Y-%m-%d %H:%M:%S') }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

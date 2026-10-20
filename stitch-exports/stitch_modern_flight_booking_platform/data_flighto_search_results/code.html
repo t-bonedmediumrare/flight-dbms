@@ -1,0 +1,390 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "on-secondary-fixed": "#001a41",
+        "on-tertiary-fixed-variant": "#294c52",
+        "on-tertiary-fixed": "#001f24",
+        "error-container": "#93000a",
+        "secondary-container": "#026be0",
+        "primary-fixed": "#d5e3ff",
+        "tertiary-container": "#95b9c1",
+        "surface-variant": "#343538",
+        "tertiary-fixed": "#c4e9f1",
+        "surface-container-lowest": "#0d0e11",
+        "surface-container": "#1e2022",
+        "surface-tint": "#a8c8ff",
+        "outline": "#8d919b",
+        "primary": "#b5cfff",
+        "on-error": "#690005",
+        "on-secondary-container": "#f2f4ff",
+        "tertiary": "#b0d5dc",
+        "surface-container-high": "#292a2d",
+        "on-error-container": "#ffdad6",
+        "on-surface": "#e3e2e6",
+        "surface-dim": "#121316",
+        "surface-container-low": "#1a1b1e",
+        "surface-bright": "#38393c",
+        "inverse-surface": "#e3e2e6",
+        "on-secondary-fixed-variant": "#004493",
+        "surface": "#121316",
+        "secondary-fixed": "#d8e2ff",
+        "on-primary-fixed-variant": "#114784",
+        "on-surface-variant": "#c3c6d1",
+        "secondary": "#adc7ff",
+        "tertiary-fixed-dim": "#a8cdd4",
+        "on-primary": "#003061",
+        "error": "#ffb4ab",
+        "on-background": "#e3e2e6",
+        "on-tertiary": "#10353c",
+        "outline-variant": "#424750",
+        "inverse-on-surface": "#2f3033",
+        "background": "#121316",
+        "secondary-fixed-dim": "#adc7ff",
+        "inverse-primary": "#315f9d",
+        "on-primary-fixed": "#001b3c",
+        "on-tertiary-container": "#274a51",
+        "on-secondary": "#002e68",
+        "on-primary-container": "#0d4582",
+        "primary-fixed-dim": "#a8c8ff",
+        "primary-container": "#8ab4f8",
+        "surface-container-highest": "#343538"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "gutter": "1rem",
+        "space-md": "0.75rem",
+        "space-2xl": "2rem",
+        "gutter-lg": "1.5rem",
+        "space-lg": "1rem",
+        "margin-lg": "3.5rem",
+        "space-xl": "1.5rem",
+        "space-sm": "0.5rem",
+        "space-xs": "0.25rem",
+        "margin-md": "2rem",
+        "margin": "1rem"
+      },
+      "fontFamily": {
+        "title-md": ["Roboto Flex"],
+        "body-md": ["Roboto Flex"],
+        "headline-xl": ["Roboto Flex"],
+        "label-md": ["Roboto Flex"],
+        "body-lg": ["Roboto Flex"],
+        "display-lg": ["Roboto Flex"],
+        "headline-xl-mobile": ["Roboto Flex"],
+        "headline-md": ["Roboto Flex"],
+        "label-lg": ["Roboto Flex"],
+        "body-sm": ["Roboto Flex"]
+      },
+      "fontSize": {
+        "title-md": ["1.125rem", {"lineHeight": "1.5rem", "letterSpacing": "0.01em", "fontWeight": "500"}],
+        "body-md": ["0.875rem", {"lineHeight": "1.25rem", "letterSpacing": "0.015em", "fontWeight": "400"}],
+        "headline-xl": ["2.25rem", {"lineHeight": "2.75rem", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+        "label-md": ["0.75rem", {"lineHeight": "1rem", "letterSpacing": "0.03em", "fontWeight": "500"}],
+        "body-lg": ["1rem", {"lineHeight": "1.5rem", "letterSpacing": "0.01em", "fontWeight": "400"}],
+        "display-lg": ["3.5rem", {"lineHeight": "4.25rem", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+        "headline-xl-mobile": ["1.75rem", {"lineHeight": "2.25rem", "letterSpacing": "0em", "fontWeight": "500"}],
+        "headline-md": ["1.375rem", {"lineHeight": "1.75rem", "letterSpacing": "0em", "fontWeight": "500"}],
+        "label-lg": ["0.875rem", {"lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "500"}],
+        "body-sm": ["0.75rem", {"lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "400"}]
+      }
+    }
+  }
+}</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col"><header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant"><div class="h-16 max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-lg"><button class="p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><a class="flex items-center gap-space-sm text-on-surface select-none" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">flight_takeoff</span><span class="font-title-md text-title-md tracking-tight font-medium">data-<span class="text-on-surface-variant font-normal">flighto</span></span></a><nav class="hidden md:flex items-center gap-space-xs ml-space-md" data-active-classes="bg-surface-container-highest text-primary border-b-2 border-primary font-medium"><a class="px-space-lg py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center" data-path="travel-explore" href="#">Explore</a><a aria-current="page" class="px-space-lg py-space-sm rounded-full transition-colors flex items-center bg-surface-container-highest text-primary border-b-2 border-primary font-medium" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">flight_takeoff</span><span class="font-title-md text-title-md tracking-tight font-medium">data-<span class="text-on-surface-variant font-normal">flighto</span></span></a><a class="px-space-lg py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center" data-path="hotels" href="#">Hotels</a><a class="px-space-lg py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center" data-path="vacation-rentals" href="#">Vacation rentals</a></nav></div><div class="flex items-center gap-space-sm"><button class="p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Appearance" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><button class="p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Apps" type="button"><span class="material-symbols-outlined text-[20px]">apps</span></button><div class="ml-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 flex-1 bg-background max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg pb-space-2xl"><div class="flex flex-col w-full">
+<!-- Search Header & Param Dock -->
+<section class="w-full max-w-[1024px] mx-auto pt-space-lg pb-space-md">
+<!-- Unified Clustered Search Bar Card -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm mb-space-lg">
+<!-- Upper Segmented Quick Selectors -->
+<div class="flex flex-wrap items-center gap-space-sm mb-space-md font-label-md text-label-md text-on-surface-variant">
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">sync_alt</span>
+<span class="">Round trip</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">person</span>
+<span class="">1 passenger</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button">
+<span class="">Economy</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+</div>
+<!-- Dock Inputs: Origin, Swap, Destination & Dates Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xs relative">
+<!-- Location Split -->
+<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-space-xs relative">
+<!-- Origin -->
+<div class="relative flex items-center bg-surface-container-lowest hover:bg-surface-container-low rounded-lg h-14 px-space-md transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline text-[20px] mr-space-md">trip_origin</span>
+<div class="flex flex-col justify-center min-w-0">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">Mumbai</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Chhatrapati Shivaji Maharaj (BOM)</span>
+</div>
+</div>
+<!-- Swap Button Overlay -->
+<button aria-label="Swap origin and destination" class="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface items-center justify-center shadow-md transition-transform hover:rotate-180" type="button">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+</button>
+<!-- Destination -->
+<div class="relative flex items-center bg-surface-container-lowest hover:bg-surface-container-low rounded-lg h-14 px-space-md transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-primary text-[20px] mr-space-md">location_on</span>
+<div class="flex flex-col justify-center min-w-0">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">London</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">All airports (LON)</span>
+</div>
+</div>
+</div>
+<!-- Date Range Split -->
+<div class="lg:col-span-5 grid grid-cols-2 gap-space-xs">
+<!-- Departure -->
+<div class="flex items-center bg-surface-container-lowest hover:bg-surface-container-low rounded-lg h-14 px-space-md cursor-pointer transition-colors justify-between">
+<div class="flex items-center min-w-0 gap-space-sm">
+<span class="material-symbols-outlined text-outline text-[20px]">calendar_today</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Departure</span>
+<span class="font-label-lg text-label-lg text-on-surface truncate font-medium">Thu, Nov 5</span>
+</div>
+</div>
+<div class="flex items-center text-outline-variant">
+<button class="hover:text-on-surface p-1" type="button"><span class="material-symbols-outlined text-[16px]">chevron_left</span></button>
+<button class="hover:text-on-surface p-1" type="button"><span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+</div>
+</div>
+<!-- Return -->
+<div class="flex items-center bg-surface-container-lowest hover:bg-surface-container-low rounded-lg h-14 px-space-md cursor-pointer transition-colors justify-between">
+<div class="flex items-center min-w-0 gap-space-sm">
+<span class="material-symbols-outlined text-outline text-[20px]">calendar_today</span>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Return</span>
+<span class="font-label-lg text-label-lg text-on-surface truncate font-medium">Thu, Nov 12</span>
+</div>
+</div>
+<div class="flex items-center text-outline-variant">
+<button class="hover:text-on-surface p-1" type="button"><span class="material-symbols-outlined text-[16px]">chevron_left</span></button>
+<button class="hover:text-on-surface p-1" type="button"><span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Filter Pills Row -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-space-sm no-scrollbar text-on-surface-variant font-label-lg text-label-lg">
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface whitespace-nowrap" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="">All filters</span>
+</button>
+<!-- Active Filter Pill Example -->
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-on-primary-container text-primary font-medium whitespace-nowrap" type="button">
+<span class="">Stops: Up to 1 stop</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Airlines</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Bags</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Price</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Times</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">eco</span>
+<span class="">Emissions</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Connecting airports</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors whitespace-nowrap" type="button">
+<span class="">Duration</span>
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+</div>
+</section>
+<!-- Interactive 7-Day Fare Tracker & Tools Bar -->
+<section class="w-full max-w-[1024px] mx-auto mb-space-lg"><div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant/60 shadow-md"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md mb-space-lg"><div><div class="flex items-center gap-2 mb-1"><span class="font-badge uppercase tracking-wider text-[11px] font-bold text-tertiary px-2 py-0.5 rounded-full bg-tertiary-container/30 border border-tertiary/30">Cheapest dates</span></div><h2 class="font-display text-[22px] md:text-[24px] text-on-surface font-bold tracking-tight">Lowest round-trip fares around Nov 5</h2></div><div class="flex items-center gap-space-xs"><button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface border border-outline-variant/50 font-label-lg text-label-lg transition-colors" type="button"><span class="material-symbols-outlined text-[18px] text-primary">calendar_view_month</span><span class="font-badge font-semibold">Date grid</span></button><button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface border border-outline-variant/50 font-label-lg text-label-lg transition-colors" type="button"><span class="material-symbols-outlined text-[18px] text-primary">show_chart</span><span class="font-badge font-semibold">Price graph</span></button></div></div><div class="grid grid-cols-7 gap-space-xs sm:gap-space-sm pt-space-md items-end h-32 px-space-xs"><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$612</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[65%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Mon 2</span></button><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$580</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[52%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Tue 3</span></button><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$595</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[58%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Wed 4</span></button><button class="flex flex-col items-center group w-full h-full justify-end relative pt-6" type="button"><span class="absolute top-0 px-2 py-0.5 rounded-full bg-secondary text-on-secondary font-label-md text-[10px] uppercase font-bold tracking-wider shadow-sm">Selected</span><span class="font-label-md text-label-md text-secondary font-bold mb-1">$468</span><div class="w-full max-w-[42px] bg-secondary-container rounded-t h-[38%] transition-all"></div><span class="font-body-sm text-body-sm text-primary font-semibold mt-2">Thu 5</span></button><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$520</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[46%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Fri 6</span></button><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$640</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[75%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Sat 7</span></button><button class="flex flex-col items-center group w-full h-full justify-end" type="button"><span class="font-mono-val text-[13px] text-on-surface-variant font-medium group-hover:text-primary mb-1.5">$610</span><div class="w-full max-w-[42px] bg-surface-variant group-hover:bg-primary-container rounded-t h-[63%] transition-all"></div><span class="font-badge text-[13px] text-on-surface-variant font-medium mt-2">Sun 8</span></button></div></div></section>
+<!-- Flight Results Master Container -->
+<div class="w-full max-w-[1024px] mx-auto space-y-space-xl">
+<!-- Section: Best Departing Flights -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between pb-space-sm px-space-xs"><div class=""><h2 class="font-display text-[22px] md:text-[24px] text-on-surface font-bold flex items-center gap-space-xs"><span class="">Best departing flights</span><span class="material-symbols-outlined text-outline hover:text-on-surface text-[18px] cursor-pointer transition-colors" title="Ranked by price, duration, and convenience">info</span></h2><p class="font-body-md text-[13px] text-on-surface-variant/90 mt-0.5">Ranked based on price, itinerary duration, and ease of transit.</p></div><div class="text-right"><button class="font-badge font-semibold text-label-md text-primary hover:text-primary-container flex items-center gap-1 px-space-sm py-1 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors" type="button"><span class="">Sort by: Top flights</span><span class="material-symbols-outlined text-[18px]">expand_more</span></button></div></div>
+<!-- Flight Rows List Stack -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-md border border-outline-variant/60 divide-y divide-surface-variant/80"><div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer bg-surface-container/60 relative"><div class="flex items-center gap-space-lg min-w-[290px]"><div class="w-11 h-11 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0"><span class="material-symbols-outlined text-[24px]">flight</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs font-mono-val text-[18px] text-on-surface font-bold tracking-tight"><span class="">02:15</span><span class="text-outline font-normal mx-0.5">→</span><span class="">07:20</span><span class="font-badge text-[12px] text-tertiary font-bold ml-1">+1</span></div><div class="text-[13px] text-on-surface-variant flex items-center gap-1.5 mt-0.5"><span class="font-semibold text-on-surface">Virgin Atlantic</span><span class="text-outline">•</span><span class="text-on-surface-variant/90">Operated by Delta Air Lines</span></div></div></div><div class="flex flex-col md:items-center"><span class="font-display text-[15px] text-on-surface font-bold">9 hr 35 min</span><span class="font-mono-val text-[12px] text-on-surface-variant/90 tracking-wide font-medium">BOM–LHR</span><span class="font-badge text-[11px] text-primary font-bold px-2 py-0.5 rounded-full bg-primary/15 mt-0.5">Nonstop</span></div><div class="flex flex-col md:items-center"><div class="flex items-center gap-1 text-[13px] font-semibold text-tertiary"><span class="material-symbols-outlined text-[16px]">eco</span><span class="font-badge">-18% emissions</span></div><span class="font-mono-val text-[12px] text-on-surface-variant font-medium">485 kg CO2</span></div><div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0"><div class="flex flex-col items-end"><span class="font-mono-val text-[26px] text-tertiary font-bold tracking-tight leading-none">$468</span><span class="font-badge text-[12px] text-on-surface-variant mt-0.5">round trip</span></div><button aria-label="Flight details" class="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">keyboard_arrow_down</span></button></div></div><div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer"><div class="flex items-center gap-space-lg min-w-[290px]"><div class="w-11 h-11 rounded-full bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center text-primary flex-shrink-0"><span class="material-symbols-outlined text-[24px]">flight_takeoff</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs font-mono-val text-[18px] text-on-surface font-bold tracking-tight"><span class="">08:45</span><span class="text-outline font-normal mx-0.5">→</span><span class="">13:40</span></div><div class="text-[13px] text-on-surface-variant flex items-center gap-1.5 mt-0.5"><span class="font-semibold text-on-surface">British Airways</span><span class="text-outline">•</span><span class="font-mono-val text-[12px] text-on-surface-variant">BA 198</span></div></div></div><div class="flex flex-col md:items-center"><span class="font-display text-[15px] text-on-surface font-bold">9 hr 25 min</span><span class="font-mono-val text-[12px] text-on-surface-variant/90 tracking-wide font-medium">BOM–LHR</span><span class="font-badge text-[11px] text-primary font-bold px-2 py-0.5 rounded-full bg-primary/15 mt-0.5">Nonstop</span></div><div class="flex flex-col md:items-center"><div class="flex items-center gap-1 text-[13px] font-medium text-on-surface-variant"><span class="font-badge">Avg. emissions</span></div><span class="font-mono-val text-[12px] text-on-surface-variant font-medium">580 kg CO2</span></div><div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0"><div class="flex flex-col items-end"><span class="font-mono-val text-[26px] text-on-surface font-bold tracking-tight leading-none">$512</span><span class="font-badge text-[12px] text-on-surface-variant mt-0.5">round trip</span></div><button aria-label="Flight details" class="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">keyboard_arrow_down</span></button></div></div><div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer"><div class="flex items-center gap-space-lg min-w-[290px]"><div class="w-11 h-11 rounded-full bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center text-primary flex-shrink-0"><span class="material-symbols-outlined text-[24px]">airlines</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs font-mono-val text-[18px] text-on-surface font-bold tracking-tight"><span class="">06:30</span><span class="text-outline font-normal mx-0.5">→</span><span class="">11:30</span></div><div class="text-[13px] text-on-surface-variant flex items-center gap-1.5 mt-0.5"><span class="font-semibold text-on-surface">Air India</span><span class="text-outline">•</span><span class="font-mono-val text-[12px] text-on-surface-variant">AI 129</span></div></div></div><div class="flex flex-col md:items-center"><span class="font-display text-[15px] text-on-surface font-bold">9 hr 30 min</span><span class="font-mono-val text-[12px] text-on-surface-variant/90 tracking-wide font-medium">BOM–LHR</span><span class="font-badge text-[11px] text-primary font-bold px-2 py-0.5 rounded-full bg-primary/15 mt-0.5">Nonstop</span></div><div class="flex flex-col md:items-center"><div class="flex items-center gap-1 text-[13px] font-semibold text-tertiary"><span class="material-symbols-outlined text-[16px]">eco</span><span class="font-badge">-8% emissions</span></div><span class="font-mono-val text-[12px] text-on-surface-variant font-medium">535 kg CO2</span></div><div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0"><div class="flex flex-col items-end"><span class="font-mono-val text-[26px] text-on-surface font-bold tracking-tight leading-none">$534</span><span class="font-badge text-[12px] text-on-surface-variant mt-0.5">round trip</span></div><button aria-label="Flight details" class="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">keyboard_arrow_down</span></button></div></div><div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer"><div class="flex items-center gap-space-lg min-w-[290px]"><div class="w-11 h-11 rounded-full bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center text-primary flex-shrink-0"><span class="material-symbols-outlined text-[24px]">public</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs font-mono-val text-[18px] text-on-surface font-bold tracking-tight"><span class="">04:30</span><span class="text-outline font-normal mx-0.5">→</span><span class="">12:15</span></div><div class="text-[13px] text-on-surface-variant flex items-center gap-1.5 mt-0.5"><span class="font-semibold text-on-surface">Emirates</span><span class="text-outline">•</span><span class="font-mono-val text-[12px] text-on-surface-variant">EK 501</span></div></div></div><div class="flex flex-col md:items-center"><span class="font-display text-[15px] text-on-surface font-bold">12 hr 15 min</span><span class="font-mono-val text-[12px] text-on-surface-variant/90 tracking-wide font-medium">BOM–LHR</span><span class="font-badge text-[12px] text-on-surface font-medium">1 stop · 2 hr 05 min DXB</span></div><div class="flex flex-col md:items-center"><div class="flex items-center gap-1 text-[13px] font-medium text-on-surface-variant"><span class="font-badge">Avg. emissions</span></div><span class="font-mono-val text-[12px] text-on-surface-variant font-medium">598 kg CO2</span></div><div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0"><div class="flex flex-col items-end"><span class="font-mono-val text-[26px] text-on-surface font-bold tracking-tight leading-none">$548</span><span class="font-badge text-[12px] text-on-surface-variant mt-0.5">round trip</span></div><button aria-label="Flight details" class="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">keyboard_arrow_down</span></button></div></div></div>
+</div>
+<!-- Collapsible Section: Other Departing Flights -->
+<div class="flex flex-col">
+<button class="w-full flex items-center justify-between p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors text-left" id="toggleOtherFlights" type="button">
+<div class="flex items-center gap-space-sm">
+<span class="font-title-md text-title-md text-on-surface font-medium">Other departing flights</span>
+<span class="font-body-sm text-body-sm px-2 py-0.5 rounded-full bg-surface-variant text-on-surface-variant">18 available</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-lg text-label-lg">
+<span class="" id="otherFlightsLabel">Show flights</span>
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200" id="otherFlightsChevron">expand_more</span>
+</div>
+</button>
+<!-- Collapsible Container (Toggled via JS) -->
+<div class="hidden mt-space-xs bg-surface-container rounded-xl overflow-hidden shadow-sm" id="otherFlightsContainer">
+<!-- Other Flight 1: Qatar Airways -->
+<div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer border-b border-surface-variant">
+<div class="flex items-center gap-space-lg min-w-[280px]">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">flight</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs font-title-md text-title-md text-on-surface font-medium">
+<span class="">03:55</span>
+<span class="text-on-surface-variant font-normal">→</span>
+<span class="">13:05</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="">Qatar Airways</span>
+<span class="">•</span>
+<span class="">QR 557</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:items-center">
+<span class="font-body-md text-body-md text-on-surface font-medium">13 hr 40 min</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">BOM–LHR</span>
+<span class="font-label-md text-label-md text-on-surface-variant">1 stop · 3 hr 10 min DOH</span>
+</div>
+<div class="flex flex-col md:items-center">
+<div class="flex items-center gap-1 font-body-sm text-body-sm text-tertiary">
+<span class="material-symbols-outlined text-[16px]">eco</span>
+<span class="">-4% emissions</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline">555 kg CO2</span>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0">
+<div class="flex flex-col items-end">
+<span class="font-headline-md text-headline-md text-on-surface font-medium leading-none">$592</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">round trip</span>
+</div>
+<button class="p-1 rounded-full text-on-surface-variant hover:bg-surface-bright transition-colors" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+<!-- Other Flight 2: Lufthansa via FRA -->
+<div class="hover:bg-surface-container-high transition-colors p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md cursor-pointer">
+<div class="flex items-center gap-space-lg min-w-[280px]">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">connecting_airports</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs font-title-md text-title-md text-on-surface font-medium">
+<span class="">01:10</span>
+<span class="text-on-surface-variant font-normal">→</span>
+<span class="">09:45</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="">Lufthansa</span>
+<span class="">•</span>
+<span class="">LH 757</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:items-center">
+<span class="font-body-md text-body-md text-on-surface font-medium">13 hr 05 min</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">BOM–LHR</span>
+<span class="font-label-md text-label-md text-on-surface-variant">1 stop · 2 hr 15 min FRA</span>
+</div>
+<div class="flex flex-col md:items-center">
+<div class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+<span class="">+6% emissions</span>
+</div>
+<span class="font-body-sm text-body-sm text-outline">612 kg CO2</span>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-lg pt-space-xs md:pt-0">
+<div class="flex flex-col items-end">
+<span class="font-headline-md text-headline-md text-on-surface font-medium leading-none">$638</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">round trip</span>
+</div>
+<button class="p-1 rounded-full text-on-surface-variant hover:bg-surface-bright transition-colors" type="button">
+<span class="material-symbols-outlined text-[24px]">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Authentic Google Price Insights Section -->
+<section class="bg-surface-container rounded-xl p-space-lg border border-outline-variant/60 shadow-md"><div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-lg mb-space-lg"><div class="space-y-1.5"><div class="flex items-center gap-space-xs text-tertiary"><div class="w-7 h-7 rounded-full bg-tertiary-container/30 flex items-center justify-center"><span class="material-symbols-outlined text-[20px] text-tertiary">trending_down</span></div><span class="font-display text-[18px] font-bold text-tertiary">Prices are currently low</span></div><p class="font-body-md text-[14px] text-on-surface leading-relaxed">The cheapest flights for your dates are usually between <span class="font-mono-val text-on-surface font-bold">$560–$780</span>. Your selected flight at <span class="font-mono-val text-tertiary font-bold">$468</span> is <span class="font-badge font-bold text-tertiary bg-tertiary-container/20 px-1.5 py-0.5 rounded">$112 cheaper</span> than normal.</p></div><div class="flex items-center gap-space-md p-space-sm pl-space-md bg-surface-container-high border border-outline-variant/50 rounded-full self-stretch lg:self-auto justify-between lg:justify-start"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[20px] text-primary">notifications_active</span><span class="font-badge text-[14px] text-on-surface font-semibold">Track prices</span></div><label class="relative inline-flex items-center cursor-pointer"><input checked="" class="sr-only peer" type="checkbox"><div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary-container after:border-surface-variant after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div></label></div></div><div class="w-full space-y-2 pt-space-xs"><div class="relative w-full h-3 rounded-full flex overflow-hidden border border-outline-variant/30"><div class="w-[30%] bg-tertiary-fixed-dim/90 h-full"></div><div class="w-[45%] bg-surface-bright h-full"></div><div class="w-[25%] bg-error-container/80 h-full"></div></div><div class="relative w-full"><div class="absolute left-[18%] -top-4 -translate-x-1/2 flex flex-col items-center"><span class="material-symbols-outlined text-tertiary text-[20px]">arrow_drop_up</span><span class="font-mono-val text-[12px] text-tertiary font-bold -mt-1.5 bg-surface-container-lowest px-1.5 py-0.5 rounded border border-tertiary/40 shadow-sm">$468 Current</span></div></div><div class="flex justify-between font-badge text-[13px] font-semibold pt-space-xs"><span class="text-tertiary">Low ($420–$550)</span><span class="text-on-surface-variant">Typical ($550–$790)</span><span class="text-error">High ($790+)</span></div></div></section>
+<!-- Additional Destination Discovery Mosaic & Map Anchor -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-md">
+<!-- Card 1: Explore Map View Banner -->
+<div class="md:col-span-2 relative rounded-xl overflow-hidden bg-surface-container flex flex-col justify-end p-space-lg min-h-[190px]">
+<div class="absolute inset-0 bg-cover bg-center opacity-40" data-location="London, United Kingdom"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/70 to-transparent"></div>
+<div class="relative z-10 flex flex-col gap-1">
+<span class="font-body-sm text-body-sm text-primary uppercase tracking-wide font-semibold">Explore Europe</span>
+<h3 class="font-title-md text-title-md text-on-surface font-normal">Compare London with nearby city routes</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Paris from $495 · Amsterdam from $510 · Dublin from $530</p>
+<div class="pt-space-xs">
+<button class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:underline" type="button">
+<span class="">View interactive route map</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Price History Insights Box -->
+<div class="rounded-xl bg-surface-container p-space-lg flex flex-col justify-between">
+<div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary mb-space-md">
+<span class="material-symbols-outlined text-[20px]">history_toggle_off</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-medium mb-1">When to book</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Prices for Mumbai–London flights are usually lowest when booked 5 to 7 weeks in advance.
+          </p>
+</div>
+<div class="pt-space-md">
+<span class="font-label-md text-label-md text-tertiary font-medium">Fares are unlikely to drop further</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  (function () {
+    const toggleBtn = document.getElementById('toggleOtherFlights');
+    const container = document.getElementById('otherFlightsContainer');
+    const label = document.getElementById('otherFlightsLabel');
+    const chevron = document.getElementById('otherFlightsChevron');
+
+    if (toggleBtn && container && label && chevron) {
+      toggleBtn.addEventListener('click', function () {
+        const isHidden = container.classList.contains('hidden');
+        if (isHidden) {
+          container.classList.remove('hidden');
+          label.textContent = 'Hide flights';
+          chevron.classList.add('rotate-180');
+        } else {
+          container.classList.add('hidden');
+          label.textContent = 'Show flights';
+          chevron.classList.remove('rotate-180');
+        }
+      });
+    }
+  })();
+</script></main><footer class="w-full bg-surface-container-low border-t border-outline-variant mt-auto py-space-xl"><div class="max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg flex flex-col md:flex-row items-center justify-between gap-space-lg font-body-sm text-body-sm text-on-surface-variant"><div class="flex flex-wrap items-center justify-center md:justify-start gap-space-lg"><button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full border border-outline-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span class="">Language · English (United States)</span></button><button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full border border-outline-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">location_on</span><span class="">Location · United States</span></button><button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full border border-outline-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">payments</span><span class="">Currency · USD ($)</span></button></div><div class="flex flex-wrap items-center gap-space-lg"><a class="hover:text-on-surface transition-colors" data-path="about" href="#">About</a><a class="hover:text-on-surface transition-colors" data-path="privacy-terms" href="#">Privacy</a><a class="hover:text-on-surface transition-colors" data-path="privacy-terms" href="#">Terms</a><a class="hover:text-on-surface transition-colors" data-path="help" href="#">Help Center</a></div></div></footer>
+</body></html>

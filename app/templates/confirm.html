@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed — PNR {{ booking.pnr }} — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-gutter lg:px-gutter-lg py-space-2xl">
+  <!-- Success Header & PNR Hero Card -->
+  <div class="bg-surface-container rounded-2xl p-space-xl md:p-space-2xl border border-outline-variant shadow-md text-center mb-space-2xl relative overflow-hidden">
+    <div class="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+
+    <div class="w-16 h-16 rounded-full bg-success-container text-success border border-outline-variant flex items-center justify-center mx-auto mb-space-lg shadow-md">
+      <span class="material-symbols-outlined text-[36px]">check_circle</span>
+    </div>
+
+    <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+      Booking Confirmed
+    </h1>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto mt-space-xs">
+      Your flight itinerary has been successfully ticketed with atomic ACID consistency.
+    </p>
+
+    <!-- PNR Box -->
+    <div class="mt-space-xl inline-flex flex-col items-center bg-accent border border-outline-variant px-space-2xl py-space-md rounded-xl shadow-md">
+      <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">
+        Booking Reference (PNR)
+      </span>
+      <span class="font-mono text-3xl md:text-4xl font-bold tracking-[0.25em] text-primary mt-1 select-all">
+        {{ booking.pnr }}
+      </span>
+      <span class="font-body-sm text-[12px] font-bold mt-1 px-2.5 py-0.5 rounded-full
+        {% if booking.status == 'confirmed' %}
+          bg-success-container text-success
+        {% elif booking.status == 'cancelled' %}
+          bg-error-container text-error
+        {% else %}
+          bg-warning-container text-warning
+        {% endif %}">
+        Status: {{ booking.status|capitalize }}
+      </span>
+    </div>
+
+    <!-- Booking Metadata Row -->
+    <div class="mt-space-lg flex flex-wrap items-center justify-center gap-space-lg text-body-sm text-on-surface-variant">
+      <div>
+        <span class="text-outline">Booked on:</span>
+        <span class="text-on-surface font-medium">{{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+      </div>
+      <div class="h-3 w-px bg-outline-variant hidden sm:block"></div>
+      <div>
+        <span class="text-outline">Primary Contact:</span>
+        <span class="text-on-surface font-medium">{{ booking.user_name }} ({{ booking.user_email }})</span>
+      </div>
+      <div class="h-3 w-px bg-outline-variant hidden sm:block"></div>
+      <div>
+        <span class="text-outline">Total Paid:</span>
+        <span class="text-primary font-bold">${{ "%.2f"|format(booking.total_amount) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-space-2xl">
+    <!-- Flight Segments Card -->
+    <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+      <div class="flex items-center justify-between pb-space-sm mb-space-lg border-b border-outline-variant">
+        <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[20px]">flight</span>
+          <span>Flight Segments</span>
+        </h2>
+        <span class="font-label-md text-label-md text-on-surface-variant">
+          {{ segments|length }} Leg{% if segments|length > 1 %}s{% endif %}
+        </span>
+      </div>
+
+      <div class="space-y-space-md">
+        {% for seg in segments %}
+          <div class="bg-surface-container-lowest p-space-md rounded-lg border border-outline-variant/30 flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-md">
+              <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[20px]">flight_takeoff</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-space-xs font-title-md text-title-md text-on-surface font-semibold">
+                  <span>{{ seg.flight_no }}</span>
+                  <span class="text-outline mx-1">•</span>
+                  <span class="font-mono text-secondary">{{ seg.origin }}</span>
+                  <span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+                  <span class="font-mono text-secondary">{{ seg.dest }}</span>
+                </div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                  Departure: {{ seg.dep_time.strftime('%Y-%m-%d %H:%M') }} → Arrival: {{ seg.arr_time.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-space-lg self-end md:self-auto">
+              <span class="px-space-md py-0.5 rounded-full bg-accent text-primary font-label-md text-label-md capitalize font-bold">
+                {{ seg.class_name }}
+              </span>
+              <span class="font-mono font-semibold text-primary">
+                ${{ "%.2f"|format(seg.price_paid) }}
+              </span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Passengers & Ticket Seat Assignments Card -->
+    <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+      <div class="flex items-center justify-between pb-space-sm mb-space-lg border-b border-outline-variant">
+        <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[20px]">airline_seat_recline_normal</span>
+          <span>Passenger Seat Assignments</span>
+        </h2>
+        <span class="font-label-md text-label-md text-on-surface-variant">
+          {{ tickets|length }} Ticket{% if tickets|length > 1 %}s{% endif %}
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left font-body-md text-body-md border-collapse">
+          <thead>
+            <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+              <th class="py-space-sm px-space-md">Ticket ID</th>
+              <th class="py-space-sm px-space-md">Passenger</th>
+              <th class="py-space-sm px-space-md">Flight</th>
+              <th class="py-space-sm px-space-md">Class</th>
+              <th class="py-space-sm px-space-md text-center">Seat Assigned</th>
+              <th class="py-space-sm px-space-md text-right">Ticket Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant/30">
+            {% for t in tickets %}
+              <tr class="hover:bg-surface-container-high/40 transition-colors">
+                <td class="py-space-md px-space-md font-mono text-outline font-medium">#{{ t.ticket_id }}</td>
+                <td class="py-space-md px-space-md font-medium text-on-surface">
+                  {{ t.name }}
+                  <span class="text-on-surface-variant text-body-sm ml-1">({{ t.age }}y, {{ t.gender }})</span>
+                </td>
+                <td class="py-space-md px-space-md font-mono text-on-surface">{{ t.flight_no }}</td>
+                <td class="py-space-md px-space-md capitalize text-on-surface-variant">{{ t.class_name }}</td>
+                <td class="py-space-md px-space-md text-center">
+                  <span class="inline-block px-3 py-1 rounded bg-accent border border-outline-variant font-mono font-bold text-primary text-title-md tracking-wider">
+                    {{ t.seat_no }}
+                  </span>
+                </td>
+                <td class="py-space-md px-space-md text-right">
+                  <span class="px-2.5 py-0.5 rounded-full font-label-md text-label-md font-semibold
+                    {% if t.status == 'active' %}
+                      bg-success-container text-success
+                    {% else %}
+                      bg-error-container text-error
+                    {% endif %}">
+                    {{ t.status|capitalize }}
+                  </span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payment Transaction Card -->
+    <div class="bg-surface-container rounded-xl p-space-lg border border-outline-variant shadow-md">
+      <div class="flex items-center justify-between pb-space-sm mb-space-lg border-b border-outline-variant">
+        <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[20px]">payments</span>
+          <span>Payment Ledger Record</span>
+        </h2>
+        <span class="font-label-md text-label-md text-tertiary">Verified</span>
+      </div>
+
+      <div class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+        {% for pay in payments %}
+          <div class="flex flex-wrap items-center justify-between gap-space-md p-space-sm rounded bg-surface-container-lowest">
+            <div>
+              <span class="text-outline">Tx ID:</span> <span class="font-mono text-on-surface">#{{ pay.payment_id }}</span>
+              <span class="mx-2">•</span>
+              <span class="text-outline">Method:</span> <span class="capitalize text-on-surface">{{ pay.method }}</span>
+              <span class="mx-2">•</span>
+              <span class="text-outline">Paid At:</span> <span class="text-on-surface">{{ pay.paid_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+            </div>
+            <div class="flex items-center gap-space-md">
+              <span class="px-2 py-0.5 rounded font-label-md uppercase font-bold bg-success-container text-success">
+                {{ pay.status }}
+              </span>
+              <span class="font-mono font-bold text-on-surface text-body-md">
+                ${{ "%.2f"|format(pay.amount) }}
+              </span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-space-md pt-space-md">
+      <div class="flex items-center gap-space-sm">
+        <a href="{{ url_for('my_bookings') }}" class="px-space-xl py-3 rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold hover:bg-primary-hover transition-all shadow-md flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">airplane_ticket</span>
+          <span>View All My Bookings</span>
+        </a>
+        <a href="{{ url_for('search') }}" class="px-space-lg py-3 rounded-full bg-surface-container hover:bg-accent text-on-surface font-label-lg text-label-lg border border-outline-variant shadow-md transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">search</span>
+          <span>Book Another Flight</span>
+        </a>
+      </div>
+
+      {% if booking.status == 'confirmed' %}
+        <form method="POST" action="{{ url_for('cancel', pnr=booking.pnr) }}" onsubmit="return confirm('Are you sure you want to cancel booking {{ booking.pnr }}? Refund policy rules will apply.');">
+          <button type="submit" class="px-space-lg py-3 rounded-full bg-error-container hover:bg-error text-error hover:text-on-error border border-outline-variant font-label-lg text-label-lg transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">cancel</span>
+            <span>Cancel Booking</span>
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

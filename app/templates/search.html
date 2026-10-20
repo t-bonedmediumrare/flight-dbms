@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Search Flights — data-flighto{% endblock %}
+
+{% block content %}
+<div class="bg-primary pt-space-2xl pb-24">
+  <div class="max-w-[1024px] mx-auto px-gutter lg:px-gutter-lg text-center">
+    <div class="inline-flex items-center gap-space-xs px-3 py-1 rounded-full bg-white/15 text-on-primary text-label-md font-label-md mb-space-lg">
+      <span class="material-symbols-outlined text-[16px]">travel_explore</span>
+      <span>Direct &amp; Multi-Hop Optimized Network Search</span>
+    </div>
+    <h1 class="font-display-lg text-headline-xl md:text-display-lg text-on-primary tracking-tight font-bold">
+      Flights
+    </h1>
+    <p class="font-body-lg text-body-lg text-on-primary/85 max-w-xl mx-auto mt-space-md">
+      Search real-time flight routes with dynamic pricing, per-class seat availability, and recursive multi-hop connections.
+    </p>
+  </div>
+</div>
+
+<div class="max-w-[1024px] mx-auto px-gutter lg:px-gutter-lg -mt-16 mb-space-2xl">
+  <!-- Search Card -->
+  <div class="bg-surface-container rounded-xl p-space-lg md:p-space-2xl shadow-md border border-outline-variant">
+    <form method="GET" action="{{ url_for('results') }}" id="searchForm">
+      <!-- Upper Segmented Quick Selectors (Passengers & Sort) -->
+      <div class="flex flex-wrap items-center gap-space-md mb-space-lg font-label-md text-label-md text-on-surface-variant">
+        <div class="flex items-center gap-space-xs bg-accent px-space-md py-1.5 rounded-full border border-outline-variant">
+          <span class="material-symbols-outlined text-[18px] text-primary">person</span>
+          <label for="passengers" class="sr-only">Passengers</label>
+          <select name="passengers" id="passengers" class="bg-transparent text-on-surface font-label-md focus:outline-none cursor-pointer">
+            <option value="1" selected>1 passenger</option>
+            <option value="2">2 passengers</option>
+            <option value="3">3 passengers</option>
+            <option value="4">4 passengers</option>
+            <option value="5">5 passengers</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-space-xs bg-accent px-space-md py-1.5 rounded-full border border-outline-variant">
+          <span class="material-symbols-outlined text-[18px] text-secondary">sort</span>
+          <label for="sort" class="sr-only">Sort by</label>
+          <select name="sort" id="sort" class="bg-transparent text-on-surface font-label-md focus:outline-none cursor-pointer">
+            <option value="price" selected>Sort by Price (Cheapest)</option>
+            <option value="duration">Sort by Duration (Fastest)</option>
+            <option value="hops">Sort by Hops (Fewest stops)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-space-xs text-on-surface-variant text-body-sm">
+          <span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+          <span>Guaranteed ACID seat reservation</span>
+        </div>
+      </div>
+
+      <!-- Dock Inputs: Origin, Swap, Destination & Date Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-sm relative">
+        <!-- Origin & Destination Group -->
+        <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-space-sm relative">
+          <!-- Origin -->
+          <div class="relative flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg h-16 px-space-md focus-within:border-primary-container transition-colors">
+            <span class="material-symbols-outlined text-outline text-[22px] mr-space-sm shrink-0">flight_takeoff</span>
+            <div class="flex flex-col justify-center min-w-0 w-full">
+              <label for="originSelect" class="font-label-md text-label-md text-on-surface-variant">From (Origin)</label>
+              <select name="origin" id="originSelect" required class="w-full bg-transparent font-title-md text-title-md text-on-surface font-medium focus:outline-none cursor-pointer truncate">
+                <option value="" disabled selected>Select departure airport</option>
+                {% for apt in airports %}
+                  <option value="{{ apt.code }}">
+                    {{ apt.city }} ({{ apt.code }}) — {{ apt.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- Swap Button Overlay -->
+          <button type="button" id="swapAirports" aria-label="Swap origin and destination" class="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-bright border border-outline-variant/60 text-on-surface-variant hover:text-on-surface items-center justify-center shadow-md transition-transform hover:rotate-180">
+            <span class="material-symbols-outlined text-[18px]">swap_horiz</span>
+          </button>
+
+          <!-- Destination -->
+          <div class="relative flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg h-16 px-space-md focus-within:border-primary-container transition-colors">
+            <span class="material-symbols-outlined text-primary text-[22px] mr-space-sm shrink-0">location_on</span>
+            <div class="flex flex-col justify-center min-w-0 w-full">
+              <label for="destSelect" class="font-label-md text-label-md text-on-surface-variant">To (Destination)</label>
+              <select name="dest" id="destSelect" required class="w-full bg-transparent font-title-md text-title-md text-on-surface font-medium focus:outline-none cursor-pointer truncate">
+                <option value="" disabled selected>Select destination airport</option>
+                {% for apt in airports %}
+                  <option value="{{ apt.code }}">
+                    {{ apt.city }} ({{ apt.code }}) — {{ apt.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Input -->
+        <div class="lg:col-span-4 flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg h-16 px-space-md focus-within:border-primary-container transition-colors">
+          <span class="material-symbols-outlined text-outline text-[22px] mr-space-sm shrink-0">calendar_today</span>
+          <div class="flex flex-col justify-center min-w-0 w-full">
+            <label for="searchDate" class="font-label-md text-label-md text-on-surface-variant">Departure Date</label>
+            <input type="date" name="date" id="searchDate" required class="w-full bg-transparent font-title-md text-title-md text-on-surface font-medium focus:outline-none cursor-pointer"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Search Action -->
+      <div class="mt-space-xl flex justify-center">
+        <button type="submit" class="w-full sm:w-auto min-w-[200px] rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold px-8 py-3.5 hover:bg-primary-hover active:scale-[0.99] transition-all flex items-center justify-center gap-space-sm shadow-md">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+          <span>Explore Flights</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    // Set default date to today or tomorrow
+    const dateInput = document.getElementById('searchDate');
+    if (dateInput && !dateInput.value) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.value = today;
+      dateInput.min = today;
+    }
+
+    // Swap airport handler
+    const swapBtn = document.getElementById('swapAirports');
+    const originSelect = document.getElementById('originSelect');
+    const destSelect = document.getElementById('destSelect');
+
+    if (swapBtn && originSelect && destSelect) {
+      swapBtn.addEventListener('click', function() {
+        const temp = originSelect.value;
+        originSelect.value = destSelect.value;
+        destSelect.value = temp;
+      });
+    }
+  })();
+</script>
+{% endblock %}

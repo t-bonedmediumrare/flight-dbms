@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Analytics Console — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-[1280px] mx-auto px-gutter lg:px-gutter-lg py-space-2xl space-y-space-2xl">
+  <!-- Admin Sub-Navigation Header & Breadcrumbs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md border-b border-outline-variant/30 pb-space-md">
+    <div class="flex items-center gap-space-sm font-label-md text-label-md text-on-surface-variant">
+      <span class="text-primary font-semibold">Admin Console</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span>Operations</span>
+      <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+      <span class="text-on-surface font-medium">Analytics</span>
+    </div>
+
+    <!-- Admin Section Tabs -->
+    <nav class="flex items-center gap-space-xs bg-surface-container p-1 rounded-full border border-outline-variant shadow-md">
+      <a href="{{ url_for('admin_flights') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">connecting_airports</span>
+        <span>Flights</span>
+      </a>
+      <a href="{{ url_for('admin_fares') }}" class="px-space-md py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">price_change</span>
+        <span>Fares</span>
+      </a>
+      <a href="{{ url_for('admin_analytics') }}" class="px-space-md py-1 rounded-full bg-accent text-primary font-label-md text-label-md font-bold shadow-sm flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">insights</span>
+        <span>Analytics</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Header / Action Bar -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+    <div>
+      <div class="flex items-center gap-space-xs font-label-md text-label-md text-primary mb-space-xs">
+        <span class="material-symbols-outlined text-[16px]">monitoring</span>
+        <span>SQL WINDOW FUNCTIONS · §6.5</span>
+      </div>
+      <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+        Network &amp; Financial Analytics
+      </h1>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">
+        Analytical metrics evaluating load factors, route yields, price lags, and running revenues.
+      </p>
+    </div>
+  </div>
+
+  <!-- 1. Route Revenue Rankings (Window function: RANK() OVER (PARTITION BY origin, dest ORDER BY revenue DESC)) -->
+  <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden">
+    <div class="px-space-xl py-space-lg bg-accent flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border-b border-outline-variant">
+      <div class="flex items-center gap-space-sm">
+        <span class="material-symbols-outlined text-primary text-[22px]">leaderboard</span>
+        <div>
+          <h2 class="font-title-md text-title-md text-on-surface font-bold">Route Revenue Rankings</h2>
+          <span class="font-body-sm text-body-sm text-on-surface-variant"><code>RANK() OVER (PARTITION BY origin, dest ORDER BY revenue DESC)</code></span>
+        </div>
+      </div>
+      <span class="font-label-md text-label-md text-on-surface-variant">{{ route_ranks|length }} routes recorded</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md border-collapse">
+        <thead>
+          <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+            <th class="py-space-md px-space-xl text-center w-20">Rank</th>
+            <th class="py-space-md px-space-lg">Route</th>
+            <th class="py-space-md px-space-lg">Flight No</th>
+            <th class="py-space-md px-space-xl text-right">Attributed Revenue</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant/20">
+          {% for r in route_ranks %}
+            <tr class="hover:bg-surface-container-high/40 transition-colors">
+              <td class="py-space-md px-space-xl text-center">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full font-mono font-bold text-label-md
+                  {% if r.rev_rank == 1 %}
+                    bg-accent text-primary
+                  {% else %}
+                    bg-surface-container-lowest text-on-surface-variant
+                  {% endif %}">
+                  {{ r.rev_rank }}
+                </span>
+              </td>
+              <td class="py-space-md px-space-lg">
+                <div class="flex items-center gap-space-sm font-semibold tracking-wide">
+                  <span class="px-space-sm py-0.5 rounded bg-surface-container-lowest text-secondary font-mono text-label-md">{{ r.origin }}</span>
+                  <span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+                  <span class="px-space-sm py-0.5 rounded bg-surface-container-lowest text-secondary font-mono text-label-md">{{ r.dest }}</span>
+                </div>
+              </td>
+              <td class="py-space-md px-space-lg font-mono text-on-surface font-medium">{{ r.flight_no }}</td>
+              <td class="py-space-md px-space-xl text-right font-mono font-bold text-primary">${{ "%.2f"|format(r.revenue) }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. Flight Load Factor (Window metric: (total - available) / total) -->
+  <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden">
+    <div class="px-space-xl py-space-lg bg-accent flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border-b border-outline-variant">
+      <div class="flex items-center gap-space-sm">
+        <span class="material-symbols-outlined text-primary text-[22px]">airline_seat_recline_normal</span>
+        <div>
+          <h2 class="font-title-md text-title-md text-on-surface font-bold">Flight Load Factor</h2>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Seat occupancy efficiency: <code>(total_seats - available_seats) / total_seats</code></span>
+        </div>
+      </div>
+      <span class="font-label-md text-label-md text-on-surface-variant">{{ load_factors|length }} flights</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md border-collapse">
+        <thead>
+          <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+            <th class="py-space-md px-space-lg">Flight</th>
+            <th class="py-space-md px-space-lg">Route</th>
+            <th class="py-space-md px-space-lg">Departure</th>
+            <th class="py-space-md px-space-lg text-center">Seats (Booked / Total)</th>
+            <th class="py-space-md px-space-xl text-right">Load Factor</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant/20">
+          {% for lf in load_factors %}
+            {% set booked = (lf.total_seats - lf.available_seats) %}
+            <tr class="hover:bg-surface-container-high/40 transition-colors">
+              <td class="py-space-md px-space-lg font-mono font-semibold text-primary">{{ lf.flight_no }}</td>
+              <td class="py-space-md px-space-lg font-mono text-secondary">{{ lf.origin }} → {{ lf.dest }}</td>
+              <td class="py-space-md px-space-lg font-mono font-body-sm text-on-surface-variant">{{ lf.dep_time.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td class="py-space-md px-space-lg text-center font-mono">
+                <span class="text-on-surface font-medium">{{ booked }}</span>
+                <span class="text-outline">/</span>
+                <span class="text-on-surface-variant">{{ lf.total_seats }}</span>
+              </td>
+              <td class="py-space-md px-space-xl text-right">
+                <div class="flex items-center justify-end gap-space-md">
+                  <div class="w-24 bg-surface-container-lowest h-2 rounded-full overflow-hidden hidden sm:block">
+                    <div class="bg-primary h-full rounded-full" style="width: {{ lf.load_factor_pct or 0 }}%;"></div>
+                  </div>
+                  <span class="font-mono font-bold text-on-surface tabular-nums">
+                    {{ lf.load_factor_pct or 0 }}%
+                  </span>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Grid of 3 & 4: Price Trends & Monthly Revenue -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-xl">
+    <!-- 3. Price Trend per Class (LAG(new_price) OVER (PARTITION BY class_id ORDER BY changed_at)) -->
+    <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden flex flex-col">
+      <div class="px-space-xl py-space-lg bg-accent border-b border-outline-variant">
+        <h2 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+          <span>Price Trend per Class (LAG Window)</span>
+        </h2>
+        <span class="font-body-sm text-body-sm text-on-surface-variant"><code>LAG(new_price) OVER (PARTITION BY class_id ORDER BY changed_at)</code></span>
+      </div>
+
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-left font-body-md text-body-md border-collapse">
+          <thead>
+            <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+              <th class="py-space-sm px-space-md">Flight</th>
+              <th class="py-space-sm px-space-md">Class</th>
+              <th class="py-space-sm px-space-md text-right">Price</th>
+              <th class="py-space-sm px-space-md text-right">Prev (Lag)</th>
+              <th class="py-space-sm px-space-md">Reason</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant/20">
+            {% for pt in price_trends %}
+              <tr class="hover:bg-surface-container-high/40 transition-colors">
+                <td class="py-space-sm px-space-md font-mono font-medium text-primary">{{ pt.flight_no }}</td>
+                <td class="py-space-sm px-space-md capitalize text-on-surface">{{ pt.class_name }}</td>
+                <td class="py-space-sm px-space-md text-right font-mono font-bold text-on-surface">${{ "%.2f"|format(pt.new_price) }}</td>
+                <td class="py-space-sm px-space-md text-right font-mono text-outline">
+                  {% if pt.prev_price %}${{ "%.2f"|format(pt.prev_price) }}{% else %}—{% endif %}
+                </td>
+                <td class="py-space-sm px-space-md text-body-sm text-on-surface-variant truncate max-w-[140px]" title="{{ pt.reason }}">
+                  {{ pt.reason }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Running Monthly Cumulative Revenue (SUM() OVER (ORDER BY day)) -->
+    <section class="bg-surface-container rounded-xl shadow-md border border-outline-variant overflow-hidden flex flex-col">
+      <div class="px-space-xl py-space-lg bg-accent border-b border-outline-variant">
+        <h2 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
+          <span>Running Monthly Cumulative Revenue</span>
+        </h2>
+        <span class="font-body-sm text-body-sm text-on-surface-variant"><code>SUM(daily_total) OVER (PARTITION BY month ORDER BY day)</code></span>
+      </div>
+
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-left font-body-md text-body-md border-collapse">
+          <thead>
+            <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+              <th class="py-space-sm px-space-md">Date</th>
+              <th class="py-space-sm px-space-md text-right">Daily Revenue</th>
+              <th class="py-space-sm px-space-md text-right">Running Monthly Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant/20">
+            {% for mr in monthly_revenue %}
+              <tr class="hover:bg-surface-container-high/40 transition-colors">
+                <td class="py-space-sm px-space-md font-mono text-on-surface">{{ mr.day }}</td>
+                <td class="py-space-sm px-space-md text-right font-mono font-medium text-secondary">
+                  ${{ "%.2f"|format(mr.daily_total) }}
+                </td>
+                <td class="py-space-sm px-space-md text-right font-mono font-bold text-primary">
+                  ${{ "%.2f"|format(mr.running_monthly_rev) }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

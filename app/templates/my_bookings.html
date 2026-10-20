@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings &amp; Trips — data-flighto{% endblock %}
+
+{% block content %}
+<div class="max-w-[1024px] mx-auto px-gutter lg:px-gutter-lg py-space-xl space-y-space-2xl">
+  <!-- Top Header -->
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-md">
+    <div>
+      <div class="flex items-center gap-space-xs text-secondary text-label-md font-label-md uppercase tracking-wider mb-1">
+        <span class="material-symbols-outlined text-[16px]">luggage</span>
+        <span>Passenger Portal</span>
+      </div>
+      <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+        My Bookings
+      </h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">
+        Manage your active flight itineraries, ticket records, and waitlist queues.
+      </p>
+    </div>
+
+    <a href="{{ url_for('search') }}" class="inline-flex items-center gap-space-xs px-space-lg py-2.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold hover:bg-primary-hover transition-all shadow-md self-start sm:self-auto">
+      <span class="material-symbols-outlined text-[18px]">add</span>
+      <span>Book New Flight</span>
+    </a>
+  </div>
+
+  <!-- Confirmed Bookings Section -->
+  <section class="space-y-space-md">
+    <div class="flex items-center justify-between pb-space-xs">
+      <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+        <span class="material-symbols-outlined text-primary text-[22px]">airplane_ticket</span>
+        <span>Flight Bookings</span>
+      </h2>
+      <span class="font-label-md text-label-md text-on-surface-variant">
+        {{ bookings|length }} {% if bookings|length == 1 %}reservation{% else %}reservations{% endif %}
+      </span>
+    </div>
+
+    {% if bookings %}
+      <div class="space-y-space-md">
+        {% for b in bookings %}
+          <div class="rounded-xl bg-surface-container border border-outline-variant shadow-md overflow-hidden hover:border-outline-variant transition-colors">
+            <!-- Header bar of card -->
+            <div class="p-space-lg bg-accent/60 flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm border-b border-outline-variant">
+              <div class="flex items-center gap-space-sm flex-wrap">
+                <span class="px-3 py-1 rounded-full font-label-md text-label-md font-bold tracking-wider uppercase
+                  {% if b.status == 'confirmed' %}
+                    bg-success-container text-success
+                  {% elif b.status == 'cancelled' %}
+                    bg-error-container text-error
+                  {% else %}
+                    bg-warning-container text-warning
+                  {% endif %}">
+                  {{ b.status|capitalize }}
+                </span>
+                <span class="text-on-surface-variant font-body-sm text-body-sm">
+                  PNR: <strong class="font-mono text-on-surface text-body-md">{{ b.pnr }}</strong>
+                </span>
+                <span class="text-outline hidden sm:inline">•</span>
+                <span class="text-on-surface-variant font-body-sm text-body-sm">
+                  Booked on {{ b.created_at.strftime('%Y-%m-%d') }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">Total:</span>
+                <span class="font-title-md text-title-md font-bold text-primary font-mono">
+                  ${{ "%.2f"|format(b.total_amount) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Body content of card -->
+            <div class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg">
+              <div class="flex items-center gap-space-md">
+                <div class="w-11 h-11 rounded-full bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
+                </div>
+                <div>
+                  <div class="font-title-md text-title-md font-semibold text-on-surface">
+                    Flight {{ b.flight_numbers or 'Itinerary' }}
+                  </div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-space-md flex-wrap">
+                    {% if b.first_dep and b.last_arr %}
+                      <span>{{ b.first_dep.strftime('%b %d, %H:%M') }} → {{ b.last_arr.strftime('%b %d, %H:%M') }}</span>
+                    {% endif %}
+                    <span>{{ b.segment_count }} leg{% if b.segment_count > 1 %}s{% endif %}</span>
+                    <span>{{ b.ticket_count }} passenger{% if b.ticket_count > 1 %}s{% endif %}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex items-center gap-space-sm self-end md:self-auto flex-wrap">
+                <a href="{{ url_for('confirm_booking', pnr=b.pnr) }}" class="px-space-md py-2 rounded-full bg-surface-container hover:bg-accent text-on-surface border border-outline-variant font-label-md text-label-md transition-colors flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  <span>View Details</span>
+                </a>
+
+                {% if b.status == 'confirmed' %}
+                  <form method="POST" action="{{ url_for('cancel', pnr=b.pnr) }}" onsubmit="return confirm('Cancel booking {{ b.pnr }}? Refund rules will be applied.');">
+                    <button type="submit" class="px-space-md py-2 rounded-full bg-error-container hover:bg-error text-error hover:text-on-error border border-outline-variant font-label-md text-label-md transition-colors flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">cancel</span>
+                      <span>Cancel</span>
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="p-space-xl rounded-xl bg-surface-container border border-outline-variant shadow-md text-center">
+        <span class="material-symbols-outlined text-[36px] text-outline mb-space-xs block mx-auto">flight</span>
+        <p class="font-title-md text-title-md text-on-surface font-medium">No bookings yet</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 mb-space-md">Search and book flights to view your reservations here.</p>
+        <a href="{{ url_for('search') }}" class="inline-flex items-center gap-1 px-space-lg py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold hover:bg-primary-hover transition-all shadow-md">
+          <span>Search Flights</span>
+        </a>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- Waitlist Entries Section -->
+  <section class="space-y-space-md">
+    <div class="flex items-center justify-between pb-space-xs">
+      <h2 class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-space-xs">
+        <span class="material-symbols-outlined text-warning text-[22px]">pending_actions</span>
+        <span>Active Waitlist Positions</span>
+      </h2>
+      <span class="font-label-md text-label-md text-on-surface-variant">
+        {{ waitlists|length }} {% if waitlists|length == 1 %}entry{% else %}entries{% endif %}
+      </span>
+    </div>
+
+    {% if waitlists %}
+      <div class="rounded-xl bg-surface-container border border-outline-variant shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-body-md text-body-md border-collapse">
+            <thead>
+              <tr class="bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                <th class="py-space-md px-space-lg">Flight</th>
+                <th class="py-space-md px-space-lg">Route</th>
+                <th class="py-space-md px-space-lg">Departure</th>
+                <th class="py-space-md px-space-lg">Class</th>
+                <th class="py-space-md px-space-lg text-center">Seats Requested</th>
+                <th class="py-space-md px-space-lg text-center">Queue Position</th>
+                <th class="py-space-md px-space-lg text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/30">
+              {% for w in waitlists %}
+                <tr class="hover:bg-surface-container-high/40 transition-colors">
+                  <td class="py-space-md px-space-lg font-mono font-semibold text-on-surface">{{ w.flight_no }}</td>
+                  <td class="py-space-md px-space-lg font-mono text-secondary">
+                    {{ w.origin }} → {{ w.dest }}
+                  </td>
+                  <td class="py-space-md px-space-lg text-on-surface-variant font-body-sm">
+                    {{ w.dep_time.strftime('%Y-%m-%d %H:%M') }}
+                  </td>
+                  <td class="py-space-md px-space-lg capitalize text-on-surface">{{ w.class_name }}</td>
+                  <td class="py-space-md px-space-lg text-center font-mono font-medium">{{ w.seats_requested }}</td>
+                  <td class="py-space-md px-space-lg text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-accent text-primary font-mono font-bold text-label-md">
+                      #{{ w.position }}
+                    </span>
+                  </td>
+                  <td class="py-space-md px-space-lg text-right">
+                    <span class="px-2.5 py-0.5 rounded-full font-label-md text-label-md font-semibold
+                      {% if w.status == 'waiting' %}
+                        bg-warning-container text-warning
+                      {% elif w.status == 'fulfilled' %}
+                        bg-success-container text-success
+                      {% else %}
+                        bg-error-container text-error
+                      {% endif %}">
+                      {{ w.status|capitalize }}
+                    </span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% else %}
+      <div class="p-space-lg rounded-xl bg-surface-container border border-outline-variant shadow-md text-center text-on-surface-variant font-body-sm">
+        No active waitlist requests. When a flight class is full, you can join its waitlist directly from the booking screen.
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

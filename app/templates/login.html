@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in — data-flighto{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-140px)] flex items-center justify-center p-space-lg">
+  <div class="w-full max-w-md">
+    <div class="relative w-full overflow-hidden rounded-lg bg-surface-container p-space-2xl shadow-md border border-outline-variant">
+      <div class="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+
+      <header class="mb-space-xl">
+        <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight font-bold">
+          Sign in to data-flighto
+        </h1>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+          Search and manage your flight bookings
+        </p>
+      </header>
+
+      <form method="POST" action="{{ url_for('login', next=request.args.get('next')) }}" class="space-y-space-lg">
+        <div class="space-y-space-xs">
+          <label class="block font-label-md text-label-md uppercase tracking-wider text-on-surface-variant" for="email">
+            Email address
+          </label>
+          <div class="relative flex items-center rounded-lg bg-surface-container-lowest border border-outline-variant/40 transition-colors focus-within:border-primary-container">
+            <input autocomplete="email" class="w-full bg-transparent px-space-lg py-space-md font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+          </div>
+        </div>
+
+        <div class="space-y-space-xs">
+          <div class="flex items-center justify-between">
+            <label class="block font-label-md text-label-md uppercase tracking-wider text-on-surface-variant" for="password">
+              Password
+            </label>
+          </div>
+          <div class="relative flex items-center rounded-lg bg-surface-container-lowest border border-outline-variant/40 transition-colors focus-within:border-primary-container">
+            <input autocomplete="current-password" class="w-full bg-transparent px-space-lg py-space-md font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+            <button aria-label="Toggle password visibility" class="mr-space-md flex items-center justify-center text-outline hover:text-on-surface transition-colors focus:outline-none" id="togglePassword" type="button">
+              <span class="material-symbols-outlined text-title-md" id="eyeIcon">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-space-sm">
+          <button class="w-full rounded-full bg-primary py-space-md font-label-lg text-label-lg text-on-primary font-bold transition hover:bg-primary-hover active:scale-[0.99] focus:outline-none shadow-md" type="submit">
+            Sign in
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-space-xl text-center">
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          New here?
+          <a class="font-body-md text-body-md text-primary hover:underline transition-colors ml-1 font-medium" href="{{ url_for('register') }}">
+            Create an account
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if (toggleBtn && pwdInput && eyeIcon) {
+      toggleBtn.addEventListener('click', function() {
+        const isPassword = pwdInput.type === 'password';
+        pwdInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+      });
+    }
+  })();
+</script>
+{% endblock %}
